@@ -1,0 +1,15 @@
+[project]
+name = "nyc-taxi-lakehouse"
+version = "0.1.0"
+description = "Personal learning project: NYC taxi lakehouse"
+requires-python = ">=3.10"
+dependencies = [
+  "pyspark>=3.5.0",
+  "pyarrow>=14.0.0",
+  "pandas>=2.0.0",
+  "requests>=2.31.0",
+  "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4.0", "ruff>=0.5.0"]
