@@ -1,0 +1,89 @@
+{
+    "name": "pl_ingest_tlc_month",
+    "properties": {
+        "activities": [
+            {
+                "name": "copy_tlc_month",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "ParquetSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "ParquetReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "ParquetSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "ParquetWriteSettings"
+                        }
+                    },
+                    "enableStaging": false,
+                    "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                            "allowDataTruncation": true,
+                            "treatBooleanAsNumber": false
+                        }
+                    }
+                },
+                "inputs": [
+                    {
+                        "referenceName": "ds_tlc_parquet",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "year_month": {
+                                "value": "@concat(pipeline().parameters.year, '-', pipeline().parameters.month)",
+                                "type": "Expression"
+                            }
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "ds_adls_raw_parquet",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "year": {
+                                "value": "@pipeline().parameters.year",
+                                "type": "Expression"
+                            },
+                            "month": {
+                                "value": "@pipeline().parameters.month",
+                                "type": "Expression"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "parameters": {
+            "year": {
+                "type": "string",
+                "defaultValue": "2024"
+            },
+            "month": {
+                "type": "string",
+                "defaultValue": "02"
+            }
+        },
+        "annotations": []
+    }
+}

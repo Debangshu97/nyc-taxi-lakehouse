@@ -1,0 +1,27 @@
+{
+    "name": "ds_tlc_parquet",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "ls_http_tlc",
+            "type": "LinkedServiceReference"
+        },
+        "parameters": {
+            "year_month": {
+                "type": "string"
+            }
+        },
+        "annotations": [],
+        "type": "Parquet",
+        "typeProperties": {
+            "location": {
+                "type": "HttpServerLocation",
+                "relativeUrl": {
+                    "value": "@concat('trip-data/yellow_tripdata_', dataset().year_month, '.parquet')",
+                    "type": "Expression"
+                }
+            },
+            "compressionCodec": "snappy"
+        },
+        "schema": []
+    }
+}

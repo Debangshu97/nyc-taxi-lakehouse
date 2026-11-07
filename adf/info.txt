@@ -1,0 +1,6 @@
+selected resource name:		pl_ingest_tlc_month
+selected resource type:		pipeline
+factory name:			adf-nyctaxi-dk97
+factory location:		centralindia
+subscription id:		9397f8e4-cfce-4fea-897e-24240adf1c3a
+time of download (UTC):		Sat, 07 Nov 2026 18:22:09 GMT
