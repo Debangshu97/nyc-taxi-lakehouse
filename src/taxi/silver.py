@@ -6,6 +6,7 @@ from pathlib import Path
 
 from delta.tables import DeltaTable
 from pyspark.sql import functions as F
+from pyspark.sql import Window
 
 from src.taxi.quality import is_valid_trip, with_reject_reason
 from src.taxi.spark_session import get_spark
@@ -27,13 +28,25 @@ def main() -> None:
             F.col("VendorID").cast("string"),
             F.col("tpep_pickup_datetime").cast("string"),
             F.col("PULocationID").cast("string"),
+            F.col("tpep_dropoff_datetime").cast("string"),
+            F.col("DOLocationID").cast("string"),
         ),
     ).withColumn(
         "pickup_month",
         F.date_format(F.col("tpep_pickup_datetime"), "yyyy-MM"),
     )
 
-    valid = keyed.filter(is_valid_trip(keyed)).dropDuplicates(["trip_id"])
+    w = Window.partitionBy("trip_id").orderBy(
+        F.col("tpep_dropoff_datetime").desc(),
+        F.col("total_amount").desc(),
+        F.col("DOLocationID").desc(),
+    )
+    valid = (
+        keyed.filter(is_valid_trip(keyed))
+        .withColumn("_rn", F.row_number().over(w))
+        .filter("_rn = 1")
+        .drop("_rn")
+    )
     rejects = with_reject_reason(keyed.filter(~is_valid_trip(keyed)))
 
     if DeltaTable.isDeltaTable(spark, str(silver_path)):

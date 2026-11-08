@@ -44,3 +44,27 @@ Row count (Spark = PyArrow): **2,964,624**
 
 - fact_trip row count = silver trips row count
 - sum(fact_trip.fare_amount) = sum(silver.fare_amount) (within rounding)
+
+## Silver layer
+
+**trip_id key:** `VendorID | tpep_pickup_datetime | PULocationID | tpep_dropoff_datetime | DOLocationID`
+
+Dedup is deterministic: among rows with the same `trip_id`, keep the first by
+`tpep_dropoff_datetime desc, total_amount desc, DOLocationID desc` (window `row_number`).
+
+> Fix (Phase 5): the original key (vendor + pickup time + pickup zone) collided for
+> 76,872 IDs, so `dropDuplicates` kept an arbitrary row and fare totals differed
+> between Windows and Docker. Stronger key + ordered dedup made results identical.
+
+## Row counts (Jan 2024)
+
+| Layer | Rows |
+|-------|------|
+| bronze | 2,964,624 |
+| silver | 2,869,971 |
+| rejects | 94,565 |
+| exact duplicates removed | 88 |
+| fact_trip | 2,869,971 |
+
+Reconcile: silver + rejects + duplicates = bronze.
+Fare total silver = gold = **53,083,484.48** (same on Windows and in Docker).

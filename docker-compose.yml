@@ -13,18 +13,22 @@ services:
       retries: 5
 
   airflow:
-    image: apache/airflow:3.1.0-python3.11
+    build: .
+    image: nyc-taxi-airflow:latest
     command: standalone
     depends_on:
       airflow-db:
         condition: service_healthy
     environment:
+      PYTHONPATH: /opt/airflow/project
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     ports:
       - "8080:8080"
     volumes:
+      - ./src:/opt/airflow/project/src
+      - ./data:/opt/airflow/project/data
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
