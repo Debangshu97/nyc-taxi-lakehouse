@@ -1,5 +1,7 @@
 # nyc-taxi-lakehouse
 
+[![CI](https://github.com/Debangshu97/nyc-taxi-lakehouse/actions/workflows/ci.yml/badge.svg)](https://github.com/Debangshu97/nyc-taxi-lakehouse/actions/workflows/ci.yml)
+
 Personal learning project: an end-to-end lakehouse on public NYC yellow taxi data (ingest → PySpark explore → later Delta bronze/silver/gold → Airflow → Power BI).
 
 ## Status
