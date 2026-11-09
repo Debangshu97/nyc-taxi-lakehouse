@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
-from airflow.sdk import dag
+
 from airflow.providers.standard.operators.bash import BashOperator
+from airflow.sdk import dag
 
 PROJECT = "cd /opt/airflow/project && python -m src.taxi."
 

@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from delta.tables import DeltaTable
-from pyspark.sql import functions as F
 from pyspark.sql import Window
+from pyspark.sql import functions as F
 
 from src.taxi.quality import is_valid_trip, with_reject_reason
 from src.taxi.spark_session import get_spark
