@@ -8,7 +8,7 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
 
-def get_spark(app_name: str = "nyc-taxi-lakehouse") -> SparkSession:
+def get_spark(app_name: str = "nyc-taxi", extra_packages: list[str] | None = None) -> SparkSession:
     builder = (
         SparkSession.builder.appName(app_name)
         .master("local[*]")
@@ -20,4 +20,4 @@ def get_spark(app_name: str = "nyc-taxi-lakehouse") -> SparkSession:
         .config("spark.sql.shuffle.partitions", "4")
         .config("spark.driver.memory", os.getenv("SPARK_DRIVER_MEMORY", "4g"))
     )
-    return configure_spark_with_delta_pip(builder).getOrCreate()
+    return configure_spark_with_delta_pip(builder, extra_packages=extra_packages or []).getOrCreate()

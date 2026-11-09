@@ -20,8 +20,8 @@ def taxi_pipeline():
     bronze = BashOperator(task_id="bronze", bash_command=PROJECT + "bronze")
     silver = BashOperator(task_id="silver", bash_command=PROJECT + "silver")
     gold = BashOperator(task_id="gold", bash_command=PROJECT + "gold")
-
-    bronze >> silver >> gold
+    load_pg = BashOperator(task_id="load_postgres", bash_command=PROJECT + "load_postgres")
+    bronze >> silver >> gold >> load_pg
 
 
 taxi_pipeline()
