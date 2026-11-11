@@ -9,6 +9,8 @@ from pyspark.sql import SparkSession
 
 
 def get_spark(app_name: str = "nyc-taxi", extra_packages: list[str] | None = None) -> SparkSession:
+    if "DATABRICKS_RUNTIME_VERSION" in os.environ:
+        return SparkSession.builder.getOrCreate()
     active = SparkSession.getActiveSession()
     if active is not None:
         return active
