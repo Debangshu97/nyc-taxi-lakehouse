@@ -16,7 +16,9 @@ def main() -> None:
     year_month = os.getenv("TAXI_YEAR_MONTH", "2024-01")
     data_dir = Path(os.getenv("DATA_DIR", "data/raw"))
     trip_path = data_dir / f"yellow_tripdata_{year_month}.parquet"
-    bronze_path = Path("data/delta/bronze/trips")
+    delta_root = Path(os.getenv("DELTA_ROOT", "data/delta"))
+    bronze_path = delta_root / "bronze/trips"
+    
 
     if not trip_path.exists():
         raise SystemExit(f"Missing {trip_path}. Run: python -m src.taxi.ingest")

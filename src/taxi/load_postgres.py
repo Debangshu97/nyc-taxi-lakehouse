@@ -7,7 +7,7 @@ from pathlib import Path
 
 from src.taxi.spark_session import get_spark
 
-GOLD_ROOT = Path("data/delta/gold")
+GOLD_ROOT = Path(os.getenv("DELTA_ROOT", "data/delta")) / "gold"
 TABLES = ["dim_zone", "dim_date", "fact_trip", "agg_daily_zone", "agg_hour_of_week"]
 
 JDBC_URL = os.getenv("DW_JDBC_URL", "jdbc:postgresql://airflow-db:5432/taxi_dw")

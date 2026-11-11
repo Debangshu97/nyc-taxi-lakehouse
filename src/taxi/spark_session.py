@@ -9,6 +9,9 @@ from pyspark.sql import SparkSession
 
 
 def get_spark(app_name: str = "nyc-taxi", extra_packages: list[str] | None = None) -> SparkSession:
+    active = SparkSession.getActiveSession()
+    if active is not None:
+        return active
     builder = (
         SparkSession.builder.appName(app_name)
         .master("local[*]")

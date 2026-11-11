@@ -15,8 +15,9 @@ def main() -> None:
     load_dotenv()
     data_dir = Path(os.getenv("DATA_DIR", "data/raw"))
     zone_path = data_dir / "taxi_zone_lookup.csv"
-    silver_path = Path("data/delta/silver/trips")
-    gold_root = Path("data/delta/gold")
+    delta_root = Path(os.getenv("DELTA_ROOT", "data/delta"))
+    silver_path = delta_root / "silver/trips"
+    gold_root = delta_root / "gold"
 
     spark = get_spark("nyc-taxi-gold")
     silver = spark.read.format("delta").load(str(silver_path))

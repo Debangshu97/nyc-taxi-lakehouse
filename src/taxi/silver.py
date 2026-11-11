@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from delta.tables import DeltaTable
@@ -13,9 +14,10 @@ from src.taxi.spark_session import get_spark
 
 
 def main() -> None:
-    bronze_path = Path("data/delta/bronze/trips")
-    silver_path = Path("data/delta/silver/trips")
-    rejects_path = Path("data/delta/silver/rejects")
+    delta_root = Path(os.getenv("DELTA_ROOT", "data/delta"))
+    bronze_path = delta_root / "bronze/trips"
+    silver_path = delta_root / "silver/trips"
+    rejects_path = delta_root / "silver/rejects"
 
     spark = get_spark("nyc-taxi-silver")
     bronze = spark.read.format("delta").load(str(bronze_path))
