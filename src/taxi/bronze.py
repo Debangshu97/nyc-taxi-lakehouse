@@ -26,14 +26,17 @@ def main() -> None:
     spark = get_spark("nyc-taxi-bronze")
     df = spark.read.parquet(str(trip_path))
 
-    bronze = df.withColumn("_source_file", F.lit(trip_path.name)).withColumn(
-        "_ingested_at", F.current_timestamp()
+    bronze = (
+        df.withColumn("_source_file", F.lit(trip_path.name))
+        .withColumn("_ingested_at", F.current_timestamp())
+        .withColumn("year_month", F.lit(year_month))
     )
-
+    
     (
         bronze.write.format("delta")
         .mode("overwrite")
-        .option("overwriteSchema", "true")
+        .option("replaceWhere", f"year_month = '{year_month}'")
+        .option("mergeSchema", "true")
         .save(str(bronze_path))
     )
 

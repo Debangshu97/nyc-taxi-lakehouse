@@ -1,4 +1,4 @@
-
+from pyspark.sql import functions as F
 
 from datetime import datetime
 
@@ -7,8 +7,8 @@ from src.taxi.quality import is_valid_trip, with_reject_reason
 COLS = ["fare_amount", "trip_distance", "tpep_pickup_datetime", "tpep_dropoff_datetime"]
 
 
-def make_df(spark, rows):
-    return spark.createDataFrame(rows, COLS)
+def make_df(spark, rows, year_month="2024-01"):
+    return spark.createDataFrame(rows, COLS).withColumn("year_month", F.lit(year_month))
 
 
 def test_good_trip_passes(spark):

@@ -13,13 +13,10 @@ def is_valid_trip(df: DataFrame) -> Column:
         & (F.col("trip_distance") > 0)
         & (F.col("tpep_dropoff_datetime") > F.col("tpep_pickup_datetime"))
         & (
-            F.month(F.col("tpep_pickup_datetime"))
-            == F.month(F.lit("2024-01-01").cast("date"))
+            F.date_format(F.col("tpep_pickup_datetime"), "yyyy-MM")
+            == F.col("year_month")
         )
-        & (
-            F.year(F.col("tpep_pickup_datetime"))
-            == F.year(F.lit("2024-01-01").cast("date"))
-        )
+        
     )
 
 
@@ -33,8 +30,7 @@ def with_reject_reason(df: DataFrame) -> DataFrame:
             F.lit("dropoff_before_pickup"),
         )
         .when(
-            (F.year(F.col("tpep_pickup_datetime")) != 2024)
-            | (F.month(F.col("tpep_pickup_datetime")) != 1),
+            F.date_format(F.col("tpep_pickup_datetime"), "yyyy-MM") != F.col("year_month"),
             F.lit("pickup_outside_month"),
         )
         .otherwise(F.lit("unknown"))
