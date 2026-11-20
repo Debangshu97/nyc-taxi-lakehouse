@@ -1,6 +1,6 @@
-from pyspark.sql import functions as F
-
 from datetime import datetime
+
+from pyspark.sql import functions as F
 
 from src.taxi.quality import is_valid_trip, with_reject_reason
 
